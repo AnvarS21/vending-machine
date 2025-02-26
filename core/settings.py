@@ -60,7 +60,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-
+# Базы данных sqlite должно хватить
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

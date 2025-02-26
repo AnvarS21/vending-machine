@@ -1,0 +1,29 @@
+[
+{
+    "model": "commerce.product",
+    "pk": 1,
+    "fields": {
+        "name": "Газировка",
+        "price": "90.00",
+        "quantity": 10
+    }
+},
+{
+    "model": "commerce.product",
+    "pk": 2,
+    "fields": {
+        "name": "Чипсы",
+        "price": "140.00",
+        "quantity": 14
+    }
+},
+{
+    "model": "commerce.product",
+    "pk": 3,
+    "fields": {
+        "name": "Конфеты \" Rafaello\"",
+        "price": "450.00",
+        "quantity": 12
+    }
+}
+]

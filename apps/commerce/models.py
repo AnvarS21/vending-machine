@@ -17,6 +17,8 @@ class Product(models.Model):
 class Transaction(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    deposit = models.DecimalField('Внесенная сумма', max_digits=10, decimal_places=2)
+    change = models.DecimalField('Сдача', max_digits=10, decimal_places=2)
     amount = models.DecimalField('Сумма', max_digits=10, decimal_places=2)
     created_dt = models.DateTimeField('Время создания', auto_now_add=True)
 

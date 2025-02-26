@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.commerce.choices import TransactionStatuses
+
 
 class Product(models.Model):
     name = models.CharField('Название', max_length=255, help_text='Напишите название продукта')
@@ -21,6 +23,7 @@ class Transaction(models.Model):
     change = models.DecimalField('Сдача', max_digits=10, decimal_places=2)
     amount = models.DecimalField('Сумма', max_digits=10, decimal_places=2)
     created_dt = models.DateTimeField('Время создания', auto_now_add=True)
+    status = models.CharField('Статус транзакции', max_length=100, choices=TransactionStatuses.choices)
 
     class Meta:
         verbose_name = 'Транзакция'

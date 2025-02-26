@@ -57,7 +57,7 @@ class VendingMachineService:
             )
 
             return transaction_obj
-        except (ProductNotFoundError, InsufficientProductQuantityError, InsufficientFundsError):
+        except Exception:
             Transaction.objects.create(
                 product=product,
                 quantity=quantity,

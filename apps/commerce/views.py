@@ -39,7 +39,7 @@ class TransactionViewSet(ViewSet):
             transaction = VendingMachineService.purchase_product(product_id, quantity, money)
             response_serializer = TransactionResponseSerializer(data=transaction)
             response_serializer.is_valid(raise_exception=True)
-            logger.info(f'SUCCESS transaction: {response_serializer}')
+            logger.info(f'SUCCESS transaction: {response_serializer.data}')
             return Response(response_serializer.data)
         except ProductNotFoundError as e:
             return Response({'error': str(e)},

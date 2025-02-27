@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from apps.commerce.choices import TransactionStatuses
 from apps.commerce.exceptions import ProductNotFoundError, InsufficientProductQuantityError, InsufficientFundsError
 from apps.commerce.models import Product, Transaction
@@ -27,7 +29,6 @@ class VendingMachineService:
     @staticmethod
     def check_deposit(money_inserted, total_price):
         if money_inserted < total_price:
-
             raise InsufficientFundsError(
                 f"Недостаточно денег. Требуется: {total_price}, Внесено: {money_inserted}"
             )
@@ -36,34 +37,30 @@ class VendingMachineService:
     @transaction.atomic
     def purchase_product(product_id, quantity, money_inserted):
         product = VendingMachineService.get_product(product_id)
-        total_price = product.price * quantity
-        try:
+        total_price = product.price * Decimal(quantity)
 
-            VendingMachineService.check_quantity(product, quantity)
-            VendingMachineService.check_deposit(money_inserted, total_price)
+        VendingMachineService.check_quantity(product, quantity)
+        VendingMachineService.check_deposit(money_inserted, total_price)
 
-            change = money_inserted - total_price
+        change = money_inserted - total_price
 
-            product.quantity -= quantity
-            product.save()
+        product.quantity -= Decimal(quantity)
+        product.save()
 
-            transaction_obj = Transaction.objects.create(
-                product=product,
-                quantity=quantity,
-                deposit=money_inserted,
-                change=change,
-                amount=total_price,
-                status=TransactionStatuses.SUCCESS
-            )
+        Transaction.objects.create(
+            product=product,
+            quantity=quantity,
+            deposit=money_inserted,
+            change=change,
+            amount=total_price,
+            status=TransactionStatuses.SUCCESS
+        )
 
-            return transaction_obj
-        except Exception:
-            Transaction.objects.create(
-                product=product,
-                quantity=quantity,
-                deposit=money_inserted,
-                change=money_inserted,
-                amount=0,
-                status=TransactionStatuses.ERROR
-            )
-            raise
+        return {
+            'product': product_id,
+            'quantity': quantity,
+            'deposit': money_inserted,
+            'change': change,
+            'amount': total_price,
+            'status': TransactionStatuses.SUCCESS
+        }

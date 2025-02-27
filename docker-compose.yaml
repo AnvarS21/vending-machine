@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    entrypoint: ["/bin/sh", "-c", "chmod +x /app/scripts/entrypoint.sh && /app/scripts/entrypoint.sh"]
+    volumes:
+      - ./:/app
+      - sqlite_data:/app/db
+    env_file:
+      - .env
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./static:/app/static
+      - ./media:/app/media
+    depends_on:
+      - web
+    networks:
+      - app_network
+
+volumes:
+  sqlite_data:
+
+networks:
+  app_network:

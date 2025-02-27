@@ -1,4 +1,4 @@
-from os import getenv
+from os import getenv, makedirs
 
 from dotenv import load_dotenv
 
@@ -101,6 +101,10 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOG_DIR = BASE_DIR / "logs"
+makedirs(LOG_DIR, exist_ok=True)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

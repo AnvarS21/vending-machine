@@ -25,7 +25,6 @@ class TransactionViewSet(ViewSet):
                 {'error': 'Невалидные данные', 'details': serializer.errors},
                       status=status.HTTP_400_BAD_REQUEST
             )
-
         data = serializer.validated_data
         product_id = data.get('product_id')
         money = data.get('money')
@@ -34,6 +33,7 @@ class TransactionViewSet(ViewSet):
         try:
             transaction = VendingMachineService.purchase_product(product_id, quantity, money)
             response_serializer = TransactionResponseSerializer(data=transaction)
+            response_serializer.is_valid(raise_exception=True)
             return Response(response_serializer.data)
         except ProductNotFoundError as e:
             return Response({'error': str(e)},

@@ -1,3 +1,5 @@
+from logging import getLogger
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,6 +11,9 @@ from apps.commerce.exceptions import ProductNotFoundError, InsufficientProductQu
 from apps.commerce.models import Product
 from apps.commerce.serializers import ProductListSerializer, TransactionRequestSerializer, TransactionResponseSerializer
 from apps.commerce.services import VendingMachineService
+
+
+logger = getLogger('commerce')
 
 
 class ProductListView(ListModelMixin, GenericViewSet):
@@ -34,14 +39,17 @@ class TransactionViewSet(ViewSet):
             transaction = VendingMachineService.purchase_product(product_id, quantity, money)
             response_serializer = TransactionResponseSerializer(data=transaction)
             response_serializer.is_valid(raise_exception=True)
+            logger.info(f'SUCCESS transaction: {response_serializer}')
             return Response(response_serializer.data)
         except ProductNotFoundError as e:
             return Response({'error': str(e)},
                             status=status.HTTP_404_NOT_FOUND)
         except InsufficientProductQuantityError as e:
+            logger.error(f'ERROR: {repr(e)}')
             return Response({'error': str(e),'status': TransactionStatuses.ERROR},
                             status=status.HTTP_400_BAD_REQUEST)
         except InsufficientFundsError as e:
+            logger.error(f'ERROR: {repr(e)}')
             return Response({'error': str(e), 'status': TransactionStatuses.ERROR},
                             status=status.HTTP_400_BAD_REQUEST)
         except Exception:

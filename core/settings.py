@@ -101,3 +101,50 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "{levelname} {asctime} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "info_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "simple",
+            "filename": BASE_DIR / "logs/info.log",
+        },
+        "error_file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "formatter": "simple",
+            "filename": BASE_DIR / "logs/error.log",
+        },
+        "api_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "simple",
+            "filename": BASE_DIR / "logs/api.log",
+        },
+    },
+    "loggers": {
+        "commerce": {
+            "handlers": ["info_file", "error_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.server": {
+            "handlers": ["api_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["api_file", "error_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
